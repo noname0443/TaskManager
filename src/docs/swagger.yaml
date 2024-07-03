@@ -1,11 +1,9 @@
 basePath: /api/v1
 definitions:
-  api.UpdateUserRequest:
+  api.CreateUserRequest:
     properties:
-      newUser:
-        $ref: '#/definitions/api.User'
-      userId:
-        type: integer
+      passportNumber:
+        type: string
     type: object
   api.User:
     properties:
@@ -173,7 +171,7 @@ paths:
         name: passportNumber
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/api.CreateUserRequest'
       produces:
       - application/json
       responses:
@@ -195,12 +193,12 @@ paths:
       - application/json
       description: Updates user
       parameters:
-      - description: updateUserRequest
+      - description: User
         in: body
-        name: updateUserRequest
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/api.UpdateUserRequest'
+          $ref: '#/definitions/api.User'
       produces:
       - application/json
       responses:

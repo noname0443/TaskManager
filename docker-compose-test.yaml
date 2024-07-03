@@ -7,31 +7,42 @@ services:
       POSTGRES_DB: "postgres"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
-    ports:
-      - "5432:5432"
+    networks:
+      test_net:
+        ipv4_address: 192.168.56.2
+
+  task_manager:
+    env_file: ".env_test"
+    depends_on:
+      - postgres
+      - external_service
+    build:
+      context: ./src
+      dockerfile: ./Dockerfile
+    hostname: task_manager
     networks:
       test_net:
         ipv4_address: 192.168.56.3
 
-  task_manager:
+  external_service:
     build:
-      context: ./src
-      dockerfile: ./src/Dockerfile
+      context: ./external_service
+      dockerfile: ./Dockerfile
     hostname: task_manager
-    ports:
-      - 8080:8080
     networks:
       test_net:
         ipv4_address: 192.168.56.4
 
-  external_service:
+  postman:
+    depends_on:
+      - task_manager
     build:
-      context: ./external_service
-      dockerfile: ./external_service/Dockerfile
-    hostname: task_manager
+      context: ./tests
+      dockerfile: ./Dockerfile
+    hostname: postman
     networks:
       test_net:
-        ipv4_address: 192.168.56.4
+        ipv4_address: 192.168.56.5
 
 networks:
   test_net:
