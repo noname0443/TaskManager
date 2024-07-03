@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "github.com/noname0443/task_manager/docs"
+	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 	"github.com/noname0443/task_manager/api"
@@ -26,6 +27,8 @@ import (
 
 func main() {
 	r := gin.Default()
+
+	logrus.SetLevel(logrus.DebugLevel)
 
 	c := api.NewController()
 

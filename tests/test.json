@@ -1,0 +1,156 @@
+{
+	"info": {
+		"_postman_id": "853c67b9-e999-4ca8-8eb5-cdebc91020d4",
+		"name": "TaskManager testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "18451230"
+	},
+	"item": [
+		{
+			"name": "Retry",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"for(let i = 1; i <= 5; i++) {\r",
+							"    const postRequest = {\r",
+							"        url: 'http://192.168.56.3:8080/api/v1/users',\r",
+							"        method: 'GET',\r",
+							"    };\r",
+							"    setTimeout(function(){\r",
+							"        pm.sendRequest(postRequest, (error, response) => {\r",
+							"            console.log(i, new Date().getTime());\r",
+							"            if(error !== null) {\r",
+							"                console.log(error);\r",
+							"            }\r",
+							"        });\r",
+							"    }, 5000*i);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "192.168.56.3:8080/api/v1/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response contains ID 1\", function () {\r",
+							"    let responseData = pm.response.json();\r",
+							"    pm.expect(1).eql(responseData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"passportNumber\":\"1234 567890\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "192.168.56.3:8080/api/v1/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Create user 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response contains ID 2\", function () {\r",
+							"    let responseData = pm.response.json();\r",
+							"    pm.expect(2).eql(responseData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"passportNumber\":\"0000 111222\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "192.168.56.3:8080/api/v1/users"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {\r",
+					"    pm.response.to.have.status(200);\r",
+					"});"
+				]
+			}
+		}
+	]
+}

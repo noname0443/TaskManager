@@ -198,12 +198,12 @@ const docTemplate = `{
                 "summary": "Updates user",
                 "parameters": [
                     {
-                        "description": "updateUserRequest",
-                        "name": "updateUserRequest",
+                        "description": "User",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.UpdateUserRequest"
+                            "$ref": "#/definitions/api.User"
                         }
                     }
                 ],
@@ -244,7 +244,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.CreateUserRequest"
                         }
                     }
                 ],
@@ -368,14 +368,11 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.UpdateUserRequest": {
+        "api.CreateUserRequest": {
             "type": "object",
             "properties": {
-                "newUser": {
-                    "$ref": "#/definitions/api.User"
-                },
-                "userId": {
-                    "type": "integer"
+                "passportNumber": {
+                    "type": "string"
                 }
             }
         },
