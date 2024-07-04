@@ -18,9 +18,9 @@ type User struct {
 
 type Task struct {
 	gorm.Model
-	UserID       int       `json:"userId"`
-	TaskName     string    `json:"taskName"`
-	TaskDuration time.Time `json:"taskDuration"`
-	TaskStart    time.Time `json:"taskStart"`
-	Status       bool      `json:"status"`
+	UserID      uint      `json:"userId"`
+	Description string    `json:"description"`
+	Duration    time.Time `json:"duration"`
+	Start       time.Time `json:"start"`
+	Status      bool      `json:"status"`
 }

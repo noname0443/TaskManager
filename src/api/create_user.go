@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/noname0443/task_manager/httputil"
@@ -17,17 +16,15 @@ import (
 // @Accept       json
 // @Produce      json
 // @Param        passportNumber body CreateUserRequest true "Create user"
-// @Success      200  {int} userId
+// @Success      200  {uint} userId
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /users/ [post]
 func (c *Controller) CreateUser(ctx *gin.Context) {
 	userData := CreateUserRequest{}
 	if err := ctx.ShouldBindJSON(&userData); err != nil {
-		passError := fmt.Errorf(httputil.NOT_ENOUGHT_FIELDS, "passportNumber")
-
-		logrus.Debug(err, passError)
-		httputil.NewError(ctx, 400, passError)
+		logrus.Debug(err)
+		httputil.NewError(ctx, 400, err)
 		return
 	}
 
@@ -39,8 +36,8 @@ func (c *Controller) CreateUser(ctx *gin.Context) {
 	}
 
 	c.db.Create(&user)
-	logrus.Debug("CreateUser")
-	ctx.JSON(200, int(user.ID))
+	logrus.Debug("CreateUser ", user)
+	ctx.JSON(200, user.ID)
 }
 
 type CreateUserRequest struct {
