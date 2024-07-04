@@ -48,25 +48,35 @@ func (c *Controller) GetUsers(ctx *gin.Context) {
 		return
 	}
 
+	fields := logrus.Fields{
+		"limit":   limit,
+		"offset":  offset,
+		"filters": filters,
+	}
+
 	users := []models.User{}
-	c.db.Where(filters).Offset(offset).Limit(limit).Find(&users)
+	if err := c.db.Where(filters).Offset(offset).Limit(limit).Find(&users).Error; err != nil {
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
+		return
+	}
 
 	byteArray, err := json.Marshal(users)
 	if err != nil {
-		logrus.Debug(err)
-		httputil.NewError(ctx, 500, err)
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
 
 	usersJson := []UserJSON{}
 	err = json.Unmarshal(byteArray, &usersJson)
 	if err != nil {
-		logrus.Debug(err)
-		httputil.NewError(ctx, 500, err)
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
 
-	logrus.Debug("GetUsers", limit, offset, filters, usersJson)
+	logrus.WithFields(fields).Debugln("GetUsers")
 	ctx.JSON(http.StatusOK, usersJson)
 }
 
