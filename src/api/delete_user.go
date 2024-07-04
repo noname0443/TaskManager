@@ -26,10 +26,3 @@ func (c *Controller) DeleteUser(ctx *gin.Context) {
 		httputil.NewError(ctx, 400, errors.New("test"))
 	}
 }
-
-type UserTask struct {
-	Task    string `json:"task"`
-	Hours   string `json:"hours"`
-	Minutes string `json:"minutes"`
-	TaskID  int    `json:"taskId"`
-}
