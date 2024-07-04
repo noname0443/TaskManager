@@ -7,13 +7,18 @@
 	},
 	"item": [
 		{
-			"name": "Retry",
+			"name": "Get all users",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							""
+							"let expected = []\r",
+							"\r",
+							"pm.test(\"Get all users\", function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -23,30 +28,59 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"for(let i = 1; i <= 5; i++) {\r",
-							"    const postRequest = {\r",
-							"        url: 'http://192.168.56.3:8080/api/v1/users',\r",
-							"        method: 'GET',\r",
-							"    };\r",
-							"    setTimeout(function(){\r",
-							"        pm.sendRequest(postRequest, (error, response) => {\r",
-							"            console.log(i, new Date().getTime());\r",
-							"            if(error !== null) {\r",
-							"                console.log(error);\r",
-							"            }\r",
-							"        });\r",
-							"    }, 5000*i);\r",
-							"}"
+							"setTimeout(function(){}, 5000);"
 						],
 						"type": "text/javascript",
 						"packages": {}
 					}
 				}
 			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": [],
-				"url": "192.168.56.3:8080/api/v1/users"
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=550&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "550"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -61,6 +95,16 @@
 							"    let responseData = pm.response.json();\r",
 							"    pm.expect(1).eql(responseData);\r",
 							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -86,6 +130,82 @@
 					}
 				},
 				"url": "192.168.56.3:8080/api/v1/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    passportNumber: '1234 567890',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(\"Get all users\", function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=5555&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5555"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -281,6 +401,309 @@
 					}
 				},
 				"url": "192.168.56.3:8080/api/v1/tasks"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    passportNumber: '1234 567890',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  },\r",
+							"  {\r",
+							"    passportNumber: '0000 111222',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(\"Get all users\", function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=5555&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5555"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get only first user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    passportNumber: '1234 567890',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(\"Get only first users\", function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=1&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get only second user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    passportNumber: '0000 111222',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(\"Get all users\", function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=1&offset=1",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "offset",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get empty set of users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = []\r",
+							"\r",
+							"pm.test(\"Get all users\", function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=2&offset=2",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "offset",
+							"value": "2"
+						}
+					]
+				}
 			},
 			"response": []
 		}

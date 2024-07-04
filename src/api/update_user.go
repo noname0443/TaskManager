@@ -9,7 +9,7 @@ import (
 	"github.com/noname0443/task_manager/models"
 )
 
-type User struct {
+type UpdateUserReq struct {
 	PassportNumber string `json:"passportNumber"`
 	Surname        string `json:"surname"`
 	Name           string `json:"name"`
@@ -23,7 +23,7 @@ type User struct {
 // @Description  Updates user
 // @Accept       json
 // @Produce      json
-// @Param        user body User true "User"
+// @Param        user body UpdateUserReq true "User"
 // @Success      200  {string}  string	"ok"
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
