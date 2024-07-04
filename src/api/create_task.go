@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/noname0443/task_manager/httputil"
@@ -31,17 +32,22 @@ func (c *Controller) CreateTask(ctx *gin.Context) {
 		return
 	}
 
+	fields := logrus.Fields{
+		"description": req.Description,
+		"userId":      req.UserID,
+	}
+
 	user := models.User{}
 	user.ID = req.UserID
 
 	result := c.db.First(&user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		logrus.Debug(req, result.Error)
-		httputil.NewError(ctx, 404, result.Error)
+		logrus.WithFields(fields).Debug(result.Error)
+		httputil.NewError(ctx, 404, fmt.Errorf(httputil.NOT_FOUND))
 		return
 	} else if result.Error != nil {
-		logrus.Debug(req, result.Error)
-		httputil.NewError(ctx, 500, result.Error)
+		logrus.WithFields(fields).Warn(result.Error)
+		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
 
@@ -49,8 +55,12 @@ func (c *Controller) CreateTask(ctx *gin.Context) {
 		UserID:      req.UserID,
 		Description: req.Description,
 	}
-	c.db.Create(&task)
-	logrus.Debug("CreateTask ", task)
+	if err := c.db.Create(&task).Error; err != nil {
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, errors.New(httputil.SOMETHING_WENT_WRONG))
+		return
+	}
+	logrus.WithFields(fields).Debug("CreateTask ")
 	ctx.JSON(200, task.ID)
 }
 

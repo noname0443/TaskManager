@@ -28,15 +28,23 @@ func (c *Controller) CreateUser(ctx *gin.Context) {
 		return
 	}
 
+	fields := logrus.Fields{
+		"passportNumber": userData.PassportNumber,
+	}
+
 	user, err := integration.GetPeopleInfo(userData.PassportNumber)
 	if err != nil {
-		logrus.Debug(err)
+		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, errors.New(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
 
-	c.db.Create(&user)
-	logrus.Debug("CreateUser ", user)
+	if err := c.db.Create(&user).Error; err != nil {
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, errors.New(httputil.SOMETHING_WENT_WRONG))
+		return
+	}
+	logrus.WithFields(fields).Debug("CreateUser")
 	ctx.JSON(200, user.ID)
 }
 

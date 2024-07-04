@@ -46,8 +46,18 @@ func (c *Controller) GetUserTasks(ctx *gin.Context) {
 		return
 	}
 
+	fields := logrus.Fields{
+		"limit":  limit,
+		"offset": offset,
+		"userId": userId,
+	}
+
 	tasks := []models.Task{}
-	c.db.Where(map[string]interface{}{"userId": userId}).Offset(offset).Limit(limit).Find(&tasks)
+	if err := c.db.Where(map[string]interface{}{"userId": userId}).Offset(offset).Limit(limit).Find(&tasks).Error; err != nil {
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
+		return
+	}
 
 	tasksJson := make([]TaskJSON, len(tasks))
 	for i, task := range tasks {
@@ -63,7 +73,7 @@ func (c *Controller) GetUserTasks(ctx *gin.Context) {
 		tasksJson[i].Seconds = uint(timeSpent.Seconds())
 		tasksJson[i].Status = task.Status
 	}
-	logrus.Debug("GetUserTasks", userId, offset, limit, tasksJson)
+	logrus.WithFields(fields).Debug("GetUserTasks")
 	ctx.JSON(200, tasksJson)
 }
 
