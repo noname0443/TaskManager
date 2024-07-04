@@ -40,10 +40,10 @@ func main() {
 		v1.POST("/tasks", c.CreateTask)
 		v1.POST("/users", c.CreateUser)
 
-		v1.PUT("/tasks/{taskid}", c.UpdateTaskStatus)
+		v1.PUT("/tasks/:taskId", c.UpdateTaskStatus)
 		v1.PUT("/users", c.UpdateUser)
 
-		v1.DELETE("/users/{userid}", c.DeleteUser)
+		v1.DELETE("/users/:userId", c.DeleteUser)
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.Run(":8080")

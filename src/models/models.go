@@ -13,7 +13,7 @@ type User struct {
 	Name           string `json:"name" gorm:"column:name"`
 	Patronymic     string `json:"patronymic" gorm:"column:patronymic"`
 	Address        string `json:"address" gorm:"column:address"`
-	Tasks          []Task `gorm:"foreignKey:userId"`
+	Tasks          []Task `gorm:"foreignKey:userId;constraint:OnDelete:CASCADE"`
 }
 
 type Task struct {
