@@ -15,7 +15,7 @@
 						"exec": [
 							"let expected = []\r",
 							"\r",
-							"pm.test(\"Get all users\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let usersData = pm.response.json();\r",
 							"    pm.expect(expected).eql(usersData);\r",
 							"});"
@@ -91,7 +91,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response contains ID 1\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let responseData = pm.response.json();\r",
 							"    pm.expect(1).eql(responseData);\r",
 							"});"
@@ -150,7 +150,7 @@
 							"  }\r",
 							"]\r",
 							"\r",
-							"pm.test(\"Get all users\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let usersData = pm.response.json();\r",
 							"    pm.expect(expected).eql(usersData);\r",
 							"});"
@@ -216,7 +216,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response contains ID 2\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let responseData = pm.response.json();\r",
 							"    pm.expect(2).eql(responseData);\r",
 							"});"
@@ -255,7 +255,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response contains TaskID 1\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let responseData = pm.response.json();\r",
 							"    pm.expect(1).eql(responseData);\r",
 							"});"
@@ -294,7 +294,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response contains TaskID 2\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let responseData = pm.response.json();\r",
 							"    pm.expect(2).eql(responseData);\r",
 							"});"
@@ -333,7 +333,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response contains TaskID 3\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let responseData = pm.response.json();\r",
 							"    pm.expect(3).eql(responseData);\r",
 							"});"
@@ -372,7 +372,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Response contains TaskID 4\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let responseData = pm.response.json();\r",
 							"    pm.expect(4).eql(responseData);\r",
 							"});"
@@ -428,7 +428,7 @@
 							"  }\r",
 							"]\r",
 							"\r",
-							"pm.test(\"Get all users\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let usersData = pm.response.json();\r",
 							"    pm.expect(expected).eql(usersData);\r",
 							"});"
@@ -488,6 +488,166 @@
 			"response": []
 		},
 		{
+			"name": "Get all users with passport 1234 567890",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    passportNumber: '1234 567890',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(pm.info.requestName, function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=5555&offset=0&filters=passportNumber=1234 567890",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5555"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "filters",
+							"value": "passportNumber=1234 567890"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all users with passport 0000 111222",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    passportNumber: '0000 111222',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(pm.info.requestName, function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=5555&offset=0&filters=passportNumber=0000 111222",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5555"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "filters",
+							"value": "passportNumber=0000 111222"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get only first user",
 			"event": [
 				{
@@ -504,7 +664,7 @@
 							"  }\r",
 							"]\r",
 							"\r",
-							"pm.test(\"Get only first users\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let usersData = pm.response.json();\r",
 							"    pm.expect(expected).eql(usersData);\r",
 							"});"
@@ -580,7 +740,7 @@
 							"  }\r",
 							"]\r",
 							"\r",
-							"pm.test(\"Get all users\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let usersData = pm.response.json();\r",
 							"    pm.expect(expected).eql(usersData);\r",
 							"});"
@@ -648,7 +808,7 @@
 						"exec": [
 							"let expected = []\r",
 							"\r",
-							"pm.test(\"Get all users\", function () {\r",
+							"pm.test(pm.info.requestName, function () {\r",
 							"    let usersData = pm.response.json();\r",
 							"    pm.expect(expected).eql(usersData);\r",
 							"});"
@@ -701,6 +861,261 @@
 						{
 							"key": "offset",
 							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user 1 tasks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    userId: 1,\r",
+							"    taskId: 1,\r",
+							"    description: 'Task 1',\r",
+							"    hours: 0,\r",
+							"    minutes: 0,\r",
+							"    seconds: 0,\r",
+							"    status: false\r",
+							"  },\r",
+							"  {\r",
+							"    userId: 1,\r",
+							"    taskId: 2,\r",
+							"    description: 'Task 2',\r",
+							"    hours: 0,\r",
+							"    minutes: 0,\r",
+							"    seconds: 0,\r",
+							"    status: false\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(pm.info.requestName, function () {\r",
+							"    let userData = pm.response.json();\r",
+							"    pm.expect(expected).eql(userData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users/1?limit=55&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"1"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "55"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user 1 tasks with limit 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    userId: 1,\r",
+							"    taskId: 1,\r",
+							"    description: 'Task 1',\r",
+							"    hours: 0,\r",
+							"    minutes: 0,\r",
+							"    seconds: 0,\r",
+							"    status: false\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(pm.info.requestName, function () {\r",
+							"    let userData = pm.response.json();\r",
+							"    pm.expect(expected).eql(userData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users/1?limit=1&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"1"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user 2 tasks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    userId: 2,\r",
+							"    taskId: 3,\r",
+							"    description: 'Task 3',\r",
+							"    hours: 0,\r",
+							"    minutes: 0,\r",
+							"    seconds: 0,\r",
+							"    status: false\r",
+							"  },\r",
+							"  {\r",
+							"    userId: 2,\r",
+							"    taskId: 4,\r",
+							"    description: 'Task 4',\r",
+							"    hours: 0,\r",
+							"    minutes: 0,\r",
+							"    seconds: 0,\r",
+							"    status: false\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(pm.info.requestName, function () {\r",
+							"    let userData = pm.response.json();\r",
+							"    pm.expect(expected).eql(userData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users/2?limit=2&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"2"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "offset",
+							"value": "0"
 						}
 					]
 				}

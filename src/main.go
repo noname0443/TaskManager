@@ -34,7 +34,7 @@ func main() {
 
 	v1 := r.Group("/api/v1")
 	{
-		v1.GET("/users/{userid}", c.GetUserTasks)
+		v1.GET("/users/:userId", c.GetUserTasks)
 		v1.GET("/users", c.GetUsers)
 
 		v1.POST("/tasks", c.CreateTask)
