@@ -6,6 +6,7 @@ const (
 	SOMETHING_WENT_WRONG = "something went wrong"
 	INCORRECT_FORMAT     = "incorrect format of %s"
 	NOT_ENOUGHT_FIELDS   = "request does not have fields [%s]"
+	NOT_FOUND            = "not found"
 )
 
 func NewError(ctx *gin.Context, status int, err error) {
