@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 
@@ -49,11 +50,27 @@ func (c *Controller) UpdateUser(ctx *gin.Context) {
 		"userId":        userId,
 	}
 
-	if err := c.db.Model(&models.User{}).Where(map[string]interface{}{"id": userId}).Updates(&req).Error; err != nil {
+	byteArray, err := json.Marshal(req)
+	if err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
+
+	user := models.User{}
+	err = json.Unmarshal(byteArray, &user)
+	if err != nil {
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
+		return
+	}
+
+	if err := c.db.Model(&models.User{}).Where(map[string]interface{}{"id": userId}).Updates(&user).Error; err != nil {
+		logrus.WithFields(fields).Warn(err)
+		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
+		return
+	}
+
 	logrus.WithFields(fields).Debug("UpdateUser")
 	ctx.String(200, "ok")
 }
