@@ -41,7 +41,7 @@ func main() {
 		v1.POST("/users", c.CreateUser)
 
 		v1.PUT("/tasks/:taskId", c.UpdateTaskStatus)
-		v1.PUT("/users", c.UpdateUser)
+		v1.PUT("/users/:userId", c.UpdateUser)
 
 		v1.DELETE("/users/:userId", c.DeleteUser)
 	}
