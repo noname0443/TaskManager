@@ -1380,7 +1380,6 @@
 							"\r",
 							"pm.test(pm.info.requestName, function () {\r",
 							"    let userData = pm.response.text();\r",
-							"    console.log(userData)\r",
 							"    pm.expect(expected).eql(userData);\r",
 							"});"
 						],
@@ -1553,6 +1552,130 @@
 						{
 							"key": "limit",
 							"value": "55"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = \"ok\"\r",
+							"\r",
+							"pm.test(pm.info.requestName, function () {\r",
+							"    let userData = pm.response.text();\r",
+							"    pm.expect(expected).eql(userData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"surname\": \"Петров\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "192.168.56.3:8080/api/v1/users/1"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let expected = [\r",
+							"  {\r",
+							"    passportNumber: '1234 567890',\r",
+							"    surname: 'Петров',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  },\r",
+							"  {\r",
+							"    passportNumber: '0000 111222',\r",
+							"    surname: 'Иванов',\r",
+							"    name: 'Иван',\r",
+							"    patronymic: 'Иванович',\r",
+							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
+							"  }\r",
+							"]\r",
+							"\r",
+							"pm.test(pm.info.requestName, function () {\r",
+							"    let usersData = pm.response.json();\r",
+							"    pm.expect(expected).eql(usersData);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "192.168.56.3:8080/api/v1/users?limit=5555&offset=0",
+					"host": [
+						"192",
+						"168",
+						"56",
+						"3"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "5555"
 						},
 						{
 							"key": "offset",
