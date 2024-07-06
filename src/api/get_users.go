@@ -27,49 +27,27 @@ import (
 // @Failure      500  {object} httputil.HTTPError
 // @Router       /users/ [get]
 func (c *Controller) GetUsers(ctx *gin.Context) {
-	limit, err := strconv.Atoi(ctx.Query("limit"))
-	if err != nil {
-		logrus.Debug(err)
-		httputil.NewError(ctx, 400, fmt.Errorf(httputil.INCORRECT_FORMAT, "limit"))
-		return
-	}
-
-	offset, err := strconv.Atoi(ctx.Query("offset"))
-	if err != nil {
-		logrus.Debug(err)
-		httputil.NewError(ctx, 400, fmt.Errorf(httputil.INCORRECT_FORMAT, "offset"))
-		return
-	}
-
-	filters, err := ParseFilters(ctx.Query("filters"))
-	if err != nil {
+	req := getUsersReq{}
+	if err := req.fromContext(ctx); err != nil {
 		logrus.Debug(err)
 		httputil.NewError(ctx, 400, err)
 		return
 	}
 
 	fields := logrus.Fields{
-		"limit":   limit,
-		"offset":  offset,
-		"filters": filters,
+		"limit":   req.limit,
+		"offset":  req.offset,
+		"filters": req.filters,
 	}
 
-	users := []models.User{}
-	if err := c.db.Where(filters).Offset(offset).Limit(limit).Find(&users).Error; err != nil {
-		logrus.WithFields(fields).Warn(err)
-		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
-		return
-	}
-
-	byteArray, err := json.Marshal(users)
+	usersDB, err := c.getUsers(req.limit, req.offset, req.filters)
 	if err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
 
-	usersJson := []UserJSON{}
-	err = json.Unmarshal(byteArray, &usersJson)
+	usersJson, err := usersDBtoJSON(usersDB)
 	if err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
@@ -80,12 +58,60 @@ func (c *Controller) GetUsers(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, usersJson)
 }
 
+func (c *Controller) getUsers(limit, offset int, filters map[string]string) ([]models.User, error) {
+	users := []models.User{}
+	if err := c.db.Where(filters).Offset(offset).Limit(limit).Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+type getUsersReq struct {
+	limit   int
+	offset  int
+	filters map[string]string
+}
+
+func (req *getUsersReq) fromContext(ctx *gin.Context) (err error) {
+	req.limit, err = strconv.Atoi(ctx.Query("limit"))
+	if err != nil {
+		return fmt.Errorf(httputil.INCORRECT_FORMAT, "limit")
+	}
+
+	req.offset, err = strconv.Atoi(ctx.Query("offset"))
+	if err != nil {
+		return fmt.Errorf(httputil.INCORRECT_FORMAT, "offset")
+	}
+
+	req.filters, err = ParseFilters(ctx.Query("filters"))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 type UserJSON struct {
 	PassportNumber string `json:"passportNumber"`
 	Surname        string `json:"surname"`
 	Name           string `json:"name"`
 	Patronymic     string `json:"patronymic"`
 	Address        string `json:"address"`
+}
+
+func usersDBtoJSON(usersDB []models.User) ([]UserJSON, error) {
+	byteArray, err := json.Marshal(usersDB)
+	if err != nil {
+		return nil, err
+	}
+
+	usersJson := []UserJSON{}
+	err = json.Unmarshal(byteArray, &usersJson)
+	if err != nil {
+		return nil, err
+	}
+
+	return usersJson, nil
 }
 
 func ParseFilters(filtersRaw string) (map[string]string, error) {

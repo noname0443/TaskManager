@@ -25,67 +25,79 @@ import (
 // @Failure      500  {object} httputil.HTTPError
 // @Router       /tasks/{taskId} [put]
 func (c *Controller) UpdateTaskStatus(ctx *gin.Context) {
-	taskId, err := strconv.Atoi(ctx.Param("taskId"))
-	if err != nil {
-		logrus.Debug(err)
-		httputil.NewError(ctx, 400, fmt.Errorf(httputil.INCORRECT_FORMAT, "taskId"))
-		return
-	}
-
-	req := UpdateTaskStatus{}
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	req := updateTaskStatus{}
+	if err := req.fromContext(ctx); err != nil {
 		logrus.Debug(err)
 		httputil.NewError(ctx, 400, err)
 		return
 	}
 
 	fields := logrus.Fields{
-		"taskId": taskId,
+		"taskId": req.taskId,
 		"status": req.Status,
 	}
 
-	task := models.Task{}
-	task.ID = uint(taskId)
-
-	if err := c.db.Where(&task).First(&task).Error; err != nil {
+	if err := c.updateTaskStatus(req.taskId, req.Status); err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
 
-	if !task.Status && req.Status {
-		if err := c.db.Model(&models.Task{}).Where(map[string]interface{}{"id": taskId}).Updates(&models.Task{
+	logrus.WithFields(fields).Debug("UpdateTaskStatus")
+	ctx.String(200, "ok")
+}
+
+type updateTaskStatus struct {
+	Status bool `json:"status"`
+	taskId int
+}
+
+func (req *updateTaskStatus) fromContext(ctx *gin.Context) (err error) {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return err
+	}
+
+	req.taskId, err = strconv.Atoi(ctx.Param("taskId"))
+	if err != nil {
+		return fmt.Errorf(httputil.INCORRECT_FORMAT, "taskId")
+	}
+
+	return nil
+}
+
+func (c *Controller) updateTaskStatus(taskId int, status bool) error {
+	whereId := map[string]interface{}{"id": taskId}
+
+	task := models.Task{}
+	task.ID = uint(taskId)
+
+	if err := c.db.Where(whereId).First(&task).Error; err != nil {
+		return err
+	}
+
+	if !task.Status && status {
+		if err := c.db.Model(&models.Task{}).Where(whereId).Updates(&models.Task{
 			Status: true,
 			Start:  time.Now(),
 		}).Error; err != nil {
-			logrus.WithFields(fields).Warn(err)
-			httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
-			return
+			return err
 		}
-	} else if task.Status && !req.Status {
+	} else if task.Status && !status {
 		if err := c.db.Model(&models.TimeSpent{}).Save(&models.TimeSpent{
 			TaskID:        task.ID,
 			BeginInterval: task.Start,
 			EndInterval:   time.Now(),
 		}).Error; err != nil {
-			logrus.WithFields(fields).Warn(err)
-			httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
-			return
+			return err
 		}
 
 		task.Status = false
 		task.Start = time.Time{}
 
-		if err := c.db.Model(&models.Task{}).Where(map[string]interface{}{"id": taskId}).Save(&task).Error; err != nil {
-			logrus.WithFields(fields).Warn(err)
-			httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
-			return
+		if err := c.db.Model(&models.Task{}).Where(whereId).Save(&task).Error; err != nil {
+			return err
 		}
 	}
-	logrus.WithFields(fields).Debug("UpdateTaskStatus")
-	ctx.String(200, "ok")
-}
 
-type UpdateTaskStatus struct {
-	Status bool `json:"status"`
+	return nil
 }
