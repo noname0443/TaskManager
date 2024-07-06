@@ -78,7 +78,7 @@ func (c *Controller) GetUserTasks(ctx *gin.Context) {
 
 	tasksDB := []TaskDB{}
 	rows, err := c.db.Raw(`SELECT id, "userId", description, status, coalesce(EXTRACT(epoch FROM SUM(estimated_time) * 1000000000)::BIGINT, 0) as estimated_time, start FROM tasks A LEFT JOIN (
-		SELECT "taskId", (LEAST(end_interval, ?) - GREATEST(begin_interval, ?)) as estimated_time FROM time_spents WHERE begin_interval < ? AND end_interval > ?
+		SELECT "taskId", (LEAST(end_interval, ?) - GREATEST(begin_interval, ?)) as estimated_time FROM time_spents WHERE begin_interval <= ? AND end_interval >= ?
 	) B ON A.id = B."taskId" WHERE "userId" = ? GROUP BY id, created_at, updated_at, deleted_at, "userId", description, start, status ORDER BY estimated_time DESC, id ASC LIMIT ? OFFSET ?;`, to, from, to, from, userId, limit, offset).Rows()
 	if err != nil {
 		logrus.WithFields(fields).Warn(err)
@@ -88,7 +88,9 @@ func (c *Controller) GetUserTasks(ctx *gin.Context) {
 	for rows.Next() {
 		taskDb := TaskDB{}
 		c.db.ScanRows(rows, &taskDb)
-		tasksDB = append(tasksDB, taskDb)
+		if taskDb.Status && taskDb.Start.Before(to.Add(-time.Second)) || taskDb.EstimatedTime > time.Second {
+			tasksDB = append(tasksDB, taskDb)
+		}
 	}
 
 	byteArray, err := json.Marshal(tasksDB)
