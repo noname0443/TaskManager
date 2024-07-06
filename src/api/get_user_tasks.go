@@ -62,6 +62,12 @@ func (c *Controller) GetUserTasks(ctx *gin.Context) {
 	}
 	to = to.Round(time.Microsecond)
 
+	if to.Before(from) {
+		logrus.Debug("'to' is before 'from'")
+		ctx.JSON(200, []TaskJSON{})
+		return
+	}
+
 	fields := logrus.Fields{
 		"from":   from,
 		"to":     to,
@@ -102,7 +108,6 @@ func (c *Controller) GetUserTasks(ctx *gin.Context) {
 
 	for i := 0; i < len(tasksJson); i++ {
 		if tasksDB[i].Status && to.After(tasksDB[i].Start) {
-			logrus.Warn(tasksDB[i].Start, to)
 			tasksDB[i].EstimatedTime += to.Sub(tasksDB[i].Start)
 		}
 		tasksJson[i].Seconds = uint(tasksDB[i].EstimatedTime.Seconds())
