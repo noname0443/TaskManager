@@ -63,8 +63,17 @@ func (c *Controller) UpdateTaskStatus(ctx *gin.Context) {
 			return
 		}
 	} else if task.Status && !req.Status {
+		if err := c.db.Model(&models.TimeSpent{}).Save(&models.TimeSpent{
+			TaskID:        task.ID,
+			BeginInterval: task.Start,
+			EndInterval:   time.Now(),
+		}).Error; err != nil {
+			logrus.WithFields(fields).Warn(err)
+			httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
+			return
+		}
+
 		task.Status = false
-		task.Duration = task.Duration + time.Since(task.Start)
 		task.Start = time.Time{}
 
 		if err := c.db.Model(&models.Task{}).Where(map[string]interface{}{"id": taskId}).Save(&task).Error; err != nil {
