@@ -45,7 +45,7 @@ func NewController() *Controller {
 	logrus.Info("connected to postgres successfully")
 
 	logrus.Info("migration has started")
-	err = db.AutoMigrate(&models.User{}, &models.Task{})
+	err = db.AutoMigrate(&models.User{}, &models.Task{}, &models.TimeSpent{})
 	if err != nil {
 		logrus.Fatal(err)
 	}
