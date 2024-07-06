@@ -21,18 +21,18 @@ import (
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /users/ [post]
 func (c *Controller) CreateUser(ctx *gin.Context) {
-	userData := CreateUserRequest{}
-	if err := ctx.ShouldBindJSON(&userData); err != nil {
+	req := createUserReq{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logrus.Debug(err)
 		httputil.NewError(ctx, 400, err)
 		return
 	}
 
 	fields := logrus.Fields{
-		"passportNumber": userData.PassportNumber,
+		"passportNumber": req.PassportNumber,
 	}
 
-	user, err := integration.GetPeopleInfo(userData.PassportNumber)
+	user, err := integration.GetPeopleInfo(req.PassportNumber)
 	if err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, errors.New(httputil.SOMETHING_WENT_WRONG))
@@ -44,10 +44,11 @@ func (c *Controller) CreateUser(ctx *gin.Context) {
 		httputil.NewError(ctx, 500, errors.New(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
+
 	logrus.WithFields(fields).Debug("CreateUser")
 	ctx.JSON(200, user.ID)
 }
 
-type CreateUserRequest struct {
+type createUserReq struct {
 	PassportNumber string `json:"passportNumber"`
 }

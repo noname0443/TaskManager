@@ -11,14 +11,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type UpdateUserReq struct {
-	PassportNumber string `json:"passportNumber"`
-	Surname        string `json:"surname"`
-	Name           string `json:"name"`
-	Patronymic     string `json:"patronymic"`
-	Address        string `json:"address"`
-}
-
 // UpdateUser godoc
 //
 // @Summary      Updates user
@@ -31,41 +23,30 @@ type UpdateUserReq struct {
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /users/{userId} [put]
 func (c *Controller) UpdateUser(ctx *gin.Context) {
-	req := UpdateUserReq{}
-	if err := ctx.ShouldBindJSON(&req); err != nil {
+	req := updateUserReq{}
+	if err := req.fromContext(ctx); err != nil {
 		logrus.Debug(err)
 		httputil.NewError(ctx, 400, err)
 		return
 	}
 
-	userId, err := strconv.Atoi(ctx.Param("userId"))
-	if err != nil {
-		logrus.Debug(err)
-		httputil.NewError(ctx, 400, fmt.Errorf(httputil.INCORRECT_FORMAT, "userId"))
-		return
-	}
-
 	fields := logrus.Fields{
-		"UpdateUserReq": req,
-		"userId":        userId,
+		"passportNumber": req.PassportNumber,
+		"surname":        req.Surname,
+		"name":           req.Name,
+		"patronymic":     req.Patronymic,
+		"address":        req.Address,
+		"userId":         req.userId,
 	}
 
-	byteArray, err := json.Marshal(req)
+	user, err := updateUserReqToUserModel(&req)
 	if err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
 
-	user := models.User{}
-	err = json.Unmarshal(byteArray, &user)
-	if err != nil {
-		logrus.WithFields(fields).Warn(err)
-		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
-		return
-	}
-
-	if err := c.db.Model(&models.User{}).Where(map[string]interface{}{"id": userId}).Updates(&user).Error; err != nil {
+	if err := c.updateUserDB(req.userId, user); err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
@@ -73,4 +54,45 @@ func (c *Controller) UpdateUser(ctx *gin.Context) {
 
 	logrus.WithFields(fields).Debug("UpdateUser")
 	ctx.String(200, "ok")
+}
+
+type updateUserReq struct {
+	PassportNumber string `json:"passportNumber"`
+	Surname        string `json:"surname"`
+	Name           string `json:"name"`
+	Patronymic     string `json:"patronymic"`
+	Address        string `json:"address"`
+	userId         int
+}
+
+func updateUserReqToUserModel(req *updateUserReq) (*models.User, error) {
+	byteArray, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+
+	user := models.User{}
+	err = json.Unmarshal(byteArray, &user)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (c *Controller) updateUserDB(userId int, user *models.User) error {
+	return c.db.Model(&models.User{}).Where(map[string]interface{}{"id": userId}).Updates(&user).Error
+}
+
+func (req *updateUserReq) fromContext(ctx *gin.Context) (err error) {
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return err
+	}
+
+	req.userId, err = strconv.Atoi(ctx.Param("userId"))
+	if err != nil {
+		return fmt.Errorf(httputil.INCORRECT_FORMAT, "userId")
+	}
+
+	return nil
 }

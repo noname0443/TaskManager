@@ -24,38 +24,55 @@ import (
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /users/{userId} [delete]
 func (c *Controller) DeleteUser(ctx *gin.Context) {
-	userId, err := strconv.Atoi(ctx.Param("userId"))
-	if err != nil {
+	req := deleteUserReq{}
+	if err := req.fromContext(ctx); err != nil {
 		logrus.Debug(err)
-		httputil.NewError(ctx, 400, fmt.Errorf(httputil.INCORRECT_FORMAT, "userId"))
+		httputil.NewError(ctx, 400, err)
 		return
 	}
-
-	user := models.User{}
-	user.ID = uint(userId)
 
 	fields := logrus.Fields{
-		"userId": userId,
+		"userId": req.userId,
 	}
 
-	var exists bool
-	if err = c.db.Model(&models.User{}).Select("count(*) > 0").Where(&user).Find(&exists).Error; err != nil {
-		logrus.WithFields(fields).Warn(err)
-		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
-		return
-	}
-
-	if !exists {
+	exist, err := c.deleteUser(req.userId)
+	if !exist {
 		logrus.WithFields(fields).Debug(err)
 		httputil.NewError(ctx, 404, fmt.Errorf(httputil.NOT_FOUND))
 		return
 	}
-
-	if err := c.db.Unscoped().Delete(&user).Error; err != nil {
+	if err != nil {
 		logrus.WithFields(fields).Warn(err)
 		httputil.NewError(ctx, 500, fmt.Errorf(httputil.SOMETHING_WENT_WRONG))
 		return
 	}
+
 	logrus.WithFields(fields).Debug("DeleteUser")
 	ctx.String(http.StatusOK, "ok")
+}
+
+type deleteUserReq struct {
+	userId int
+}
+
+func (req *deleteUserReq) fromContext(ctx *gin.Context) (err error) {
+	req.userId, err = strconv.Atoi(ctx.Param("userId"))
+	if err != nil {
+		return fmt.Errorf(httputil.INCORRECT_FORMAT, "userId")
+	}
+
+	return nil
+}
+
+func (c *Controller) deleteUser(userId int) (exists bool, err error) {
+	result := c.db.Unscoped().Delete(&models.User{}, userId)
+	if result.Error != nil {
+		return true, result.Error
+	}
+
+	if result.RowsAffected == 0 {
+		return false, nil
+	}
+
+	return true, nil
 }
