@@ -3,28 +3,41 @@ version: "3.9"
 services:
   postgres:
     image: postgres
+    env_file: .env_test
     environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
+      POSTGRES_DB: "${POSTGRES_DBNAME}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    ports:
+      - "${POSTGRES_PORT}:5432"
     networks:
       test_net:
-        ipv4_address: 192.168.56.2
+        ipv4_address: "${POSTGRES_HOST}"
 
   task_manager:
-    env_file: ".env_test"
+    env_file: .env_test
+    environment:
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
     depends_on:
       - postgres
       - external_service
     build:
-      context: ./src
+      context: ../
       dockerfile: ./Dockerfile
     hostname: task_manager
+    ports:
+      - "${SERVICE_PORT}:${SERVICE_PORT}"
     networks:
       test_net:
         ipv4_address: 192.168.56.3
 
   external_service:
+    environment:
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
     build:
       context: ./external_service
       dockerfile: ./Dockerfile
@@ -34,10 +47,13 @@ services:
         ipv4_address: 192.168.56.4
 
   postman:
+    environment:
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
     depends_on:
       - task_manager
     build:
-      context: ./tests
+      context: ./postman
       dockerfile: ./Dockerfile
     hostname: postman
     networks:

@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"time"
 
+	_ "time/tzdata"
+
 	"github.com/gin-gonic/gin"
 	"github.com/noname0443/task_manager/httputil"
 	"github.com/sirupsen/logrus"
@@ -22,7 +24,7 @@ import (
 // @Param        offset query int true "Pagination offset"
 // @Param        limit query int true "Pagination limit"
 // @Param        userId path int true "UserID"
-// @Success      200  {array} UserTask
+// @Success      200  {array} TaskJSON
 // @Failure      400  {object} httputil.HTTPError
 // @Failure      500  {object} httputil.HTTPError
 // @Router       /users/{userId} [get]
@@ -89,14 +91,19 @@ func (req *getUserTasksReq) fromContext(ctx *gin.Context) (err error) {
 		return fmt.Errorf(httputil.INCORRECT_FORMAT, "offset")
 	}
 
-	req.from, err = time.Parse(rfc3339, ctx.Query("from"))
+	loc, err := time.LoadLocation("Europe/Moscow")
+	if err != nil {
+		return fmt.Errorf(httputil.SOMETHING_WENT_WRONG)
+	}
+
+	req.from, err = time.ParseInLocation(rfc3339, ctx.Query("from"), loc)
 	if err != nil {
 		logrus.Debug(err)
 		req.from = time.Time{}
 	}
 	req.from = req.from.Round(time.Microsecond)
 
-	req.to, err = time.Parse(rfc3339, ctx.Query("to"))
+	req.to, err = time.ParseInLocation(rfc3339, ctx.Query("to"), loc)
 	if err != nil {
 		logrus.Debug(err)
 		req.to = time.Now()
@@ -163,9 +170,9 @@ func tasksDBtoJSON(tasksDB []TaskDB, to time.Time) ([]TaskJSON, error) {
 		if tasksDB[i].Status && to.After(tasksDB[i].Start) {
 			tasksDB[i].EstimatedTime += to.Sub(tasksDB[i].Start)
 		}
-		tasksJson[i].Seconds = uint(tasksDB[i].EstimatedTime.Seconds())
-		tasksJson[i].Minutes = uint(tasksDB[i].EstimatedTime.Minutes())
-		tasksJson[i].Hours = uint(tasksDB[i].EstimatedTime.Hours())
+		tasksJson[i].Seconds = uint(tasksDB[i].EstimatedTime.Seconds()) % 60
+		tasksJson[i].Minutes = uint(tasksDB[i].EstimatedTime.Minutes()) % 60
+		tasksJson[i].Hours = uint(tasksDB[i].EstimatedTime.Hours()) % 60
 	}
 	return tasksJson, nil
 }

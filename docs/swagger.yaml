@@ -1,11 +1,35 @@
 basePath: /api/v1
 definitions:
-  api.CreateUserRequest:
+  api.CreateTaskReq:
+    properties:
+      description:
+        type: string
+      userId:
+        type: integer
+    type: object
+  api.CreateUserReq:
     properties:
       passportNumber:
         type: string
     type: object
-  api.User:
+  api.TaskJSON:
+    properties:
+      description:
+        type: string
+      hours:
+        type: integer
+      minutes:
+        type: integer
+      seconds:
+        type: integer
+      status:
+        type: boolean
+      taskId:
+        type: integer
+      userId:
+        type: integer
+    type: object
+  api.UserJSON:
     properties:
       address:
         type: string
@@ -17,17 +41,26 @@ definitions:
         type: string
       surname:
         type: string
-    type: object
-  api.UserTask:
-    properties:
-      hours:
-        type: string
-      minutes:
-        type: string
-      task:
-        type: string
-      taskId:
+      userId:
         type: integer
+    type: object
+  api.updateTaskStatus:
+    properties:
+      status:
+        type: boolean
+    type: object
+  api.updateUserReq:
+    properties:
+      address:
+        type: string
+      name:
+        type: string
+      passportNumber:
+        type: string
+      patronymic:
+        type: string
+      surname:
+        type: string
     type: object
   httputil.HTTPError:
     properties:
@@ -58,12 +91,12 @@ paths:
       - application/json
       description: Creates task
       parameters:
-      - description: Description
+      - description: CreateTaskReq
         in: body
-        name: description
+        name: request
         required: true
         schema:
-          type: string
+          $ref: '#/definitions/api.CreateTaskReq'
       produces:
       - application/json
       responses:
@@ -84,20 +117,21 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Creates task
-  /tasks/{taskid}:
+  /tasks/{taskId}:
     put:
       consumes:
       - application/json
       description: Update the task's status
       parameters:
       - description: Status
-        in: query
+        in: body
         name: status
         required: true
-        type: boolean
+        schema:
+          $ref: '#/definitions/api.updateTaskStatus'
       - description: TaskID
         in: path
-        name: taskid
+        name: taskId
         required: true
         type: integer
       produces:
@@ -150,7 +184,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/api.User'
+              $ref: '#/definitions/api.UserJSON'
             type: array
         "400":
           description: Bad Request
@@ -171,14 +205,14 @@ paths:
         name: passportNumber
         required: true
         schema:
-          $ref: '#/definitions/api.CreateUserRequest'
+          $ref: '#/definitions/api.CreateUserReq'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: int
+            type: uint
         "400":
           description: Bad Request
           schema:
@@ -188,42 +222,15 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Creates user
-    put:
-      consumes:
-      - application/json
-      description: Updates user
-      parameters:
-      - description: User
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/api.User'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: ok
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-      summary: Updates user
-  /users/{userid}:
+  /users/{userId}:
     delete:
       consumes:
       - application/json
       description: Deletes user
       parameters:
-      - description: User ID
+      - description: UserID
         in: path
-        name: userid
+        name: userId
         required: true
         type: integer
       produces:
@@ -251,16 +258,29 @@ paths:
       - application/json
       description: Gets the user's tasks
       parameters:
-      - description: from
-        in: query
-        name: from
-        required: true
-        type: string
-      - description: to
+      - description: YYYY-MM-DDThh:mm:ss.SSSZ rfc3339
         in: query
         name: to
-        required: true
         type: string
+      - description: YYYY-MM-DDThh:mm:ss.SSSZ rfc3339
+        in: query
+        name: from
+        type: string
+      - description: Pagination offset
+        in: query
+        name: offset
+        required: true
+        type: integer
+      - description: Pagination limit
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: UserID
+        in: path
+        name: userId
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -268,7 +288,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/api.UserTask'
+              $ref: '#/definitions/api.TaskJSON'
             type: array
         "400":
           description: Bad Request
@@ -279,4 +299,31 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Gets the user's tasks
+    put:
+      consumes:
+      - application/json
+      description: Updates user
+      parameters:
+      - description: User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateUserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Updates user
 swagger: "2.0"

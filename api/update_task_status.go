@@ -17,7 +17,7 @@ import (
 // @Description  Update the task's status
 // @Accept       json
 // @Produce      json
-// @Param        status body UpdateTaskStatus true "Status"
+// @Param        status body updateTaskStatus true "Status"
 // @Param        taskId path int true "TaskID"
 // @Success      200  {string} string "ok"
 // @Failure      400  {object} httputil.HTTPError

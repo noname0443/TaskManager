@@ -17,7 +17,7 @@ import (
 // @Description  Updates user
 // @Accept       json
 // @Produce      json
-// @Param        user body UpdateUserReq true "User"
+// @Param        user body updateUserReq true "User"
 // @Success      200  {string}  string "ok"
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError

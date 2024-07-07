@@ -1,7 +1,11 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	_ "github.com/noname0443/task_manager/docs"
+	"github.com/noname0443/task_manager/env"
 	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +32,7 @@ import (
 func main() {
 	r := gin.Default()
 
-	logrus.SetLevel(logrus.DebugLevel)
+	LoadLoggerLevel()
 
 	c := api.NewController()
 
@@ -46,5 +50,17 @@ func main() {
 		v1.DELETE("/users/:userId", c.DeleteUser)
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Run(":8080")
+	r.Run(fmt.Sprintf(":%s", os.Getenv(env.SERVICE_PORT)))
+}
+
+func LoadLoggerLevel() {
+	log_level := os.Getenv(env.LOG)
+
+	if log_level == env.LOG_DEBUG {
+		logrus.SetLevel(logrus.DebugLevel)
+	} else if log_level == env.LOG_INFO {
+		logrus.SetLevel(logrus.InfoLevel)
+	} else {
+		logrus.Fatal("unknown log level")
+	}
 }

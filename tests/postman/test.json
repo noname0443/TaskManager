@@ -142,6 +142,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -413,6 +414,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -420,6 +422,7 @@
 							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
 							"  },\r",
 							"  {\r",
+							"    userId: 2,\r",
 							"    passportNumber: '0000 111222',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -496,6 +499,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -576,6 +580,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 2,\r",
 							"    passportNumber: '0000 111222',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -656,6 +661,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -732,6 +738,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 2,\r",
 							"    passportNumber: '0000 111222',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -1122,6 +1129,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -1129,6 +1137,7 @@
 							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
 							"  },\r",
 							"  {\r",
+							"    userId: 2,\r",
 							"    passportNumber: '0000 111222',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -1136,6 +1145,7 @@
 							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
 							"  },\r",
 							"  {\r",
+							"    userId: 3,\r",
 							"    passportNumber: '1111 222333',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -1361,6 +1371,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -1368,6 +1379,7 @@
 							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
 							"  },\r",
 							"  {\r",
+							"    userId: 2,\r",
 							"    passportNumber: '0000 111222',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -1554,6 +1566,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Петров',\r",
 							"    name: 'Иван',\r",
@@ -1561,6 +1574,7 @@
 							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
 							"  },\r",
 							"  {\r",
+							"    userId: 2,\r",
 							"    passportNumber: '0000 111222',\r",
 							"    surname: 'Иванов',\r",
 							"    name: 'Иван',\r",
@@ -1678,6 +1692,7 @@
 						"exec": [
 							"let expected = [\r",
 							"  {\r",
+							"    userId: 1,\r",
 							"    passportNumber: '1234 567890',\r",
 							"    surname: 'Петров',\r",
 							"    name: 'Иван',\r",
@@ -1685,6 +1700,7 @@
 							"    address: 'г. Москва, ул. Ленина, д. 5, кв. 1'\r",
 							"  },\r",
 							"  {\r",
+							"    userId: 2,\r",
 							"    passportNumber: '5555 666777',\r",
 							"    surname: 'Смирнов',\r",
 							"    name: 'Паша',\r",
@@ -2514,8 +2530,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) + \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"from\", rfc3339(new Date()));"
@@ -2688,8 +2703,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds())  + \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"
@@ -2908,8 +2922,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) +  \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"
@@ -3128,8 +3141,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) +  \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"
@@ -3399,8 +3411,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) +  \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"

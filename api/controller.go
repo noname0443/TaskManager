@@ -20,7 +20,7 @@ type Controller struct {
 
 func NewController() *Controller {
 	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Europe/Moscow",
 		os.Getenv(env.POSTGRES_HOST),
 		os.Getenv(env.POSTGRES_USER),
 		os.Getenv(env.POSTGRES_PASSWORD),

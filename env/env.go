@@ -7,4 +7,11 @@ const (
 	POSTGRES_PASSWORD       = "POSTGRES_PASSWORD"
 	POSTGRES_DBNAME         = "POSTGRES_DBNAME"
 	POSTGRES_PORT           = "POSTGRES_PORT"
+	SERVICE_PORT            = "SERVICE_PORT"
+	LOG                     = "LOG"
+)
+
+const (
+	LOG_DEBUG = "DEBUG"
+	LOG_INFO  = "INFO"
 )
