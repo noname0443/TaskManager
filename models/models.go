@@ -18,16 +18,16 @@ type User struct {
 
 type Task struct {
 	gorm.Model
-	UserID      uint        `json:"userId" gorm:"column:userId"`
-	Description string      `json:"description" gorm:"column:description"`
-	Start       time.Time   `json:"start" gorm:"column:start"`
-	Status      bool        `json:"status" gorm:"column:status"`
+	UserID      uint        `gorm:"column:userId"`
+	Description string      `gorm:"column:description"`
+	Start       time.Time   `gorm:"column:start"`
+	Status      bool        `gorm:"column:status"`
 	TimeSpents  []TimeSpent `gorm:"foreignKey:taskId;constraint:OnDelete:CASCADE"`
 }
 
 type TimeSpent struct {
 	gorm.Model
-	TaskID        uint      `json:"taskId" gorm:"column:taskId"`
-	BeginInterval time.Time `json:"start" gorm:"column:begin_interval"`
-	EndInterval   time.Time `json:"end" gorm:"column:end_interval"`
+	TaskID        uint      `gorm:"column:taskId"`
+	BeginInterval time.Time `gorm:"column:begin_interval"`
+	EndInterval   time.Time `gorm:"column:end_interval"`
 }
