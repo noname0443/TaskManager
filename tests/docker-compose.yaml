@@ -5,6 +5,8 @@ services:
     image: postgres
     env_file: .env_test
     environment:
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
       POSTGRES_DB: "${POSTGRES_DBNAME}"
       POSTGRES_USER: "${POSTGRES_USER}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
@@ -16,6 +18,9 @@ services:
 
   task_manager:
     env_file: .env_test
+    environment:
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
     depends_on:
       - postgres
       - external_service
@@ -30,6 +35,9 @@ services:
         ipv4_address: 192.168.56.3
 
   external_service:
+    environment:
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
     build:
       context: ./external_service
       dockerfile: ./Dockerfile
@@ -39,6 +47,9 @@ services:
         ipv4_address: 192.168.56.4
 
   postman:
+    environment:
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
     depends_on:
       - task_manager
     build:

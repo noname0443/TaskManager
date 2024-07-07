@@ -2530,8 +2530,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) + \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"from\", rfc3339(new Date()));"
@@ -2704,8 +2703,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds())  + \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"
@@ -2924,8 +2922,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) +  \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"
@@ -3144,8 +3141,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) +  \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"
@@ -3415,8 +3411,7 @@
 							"        pad(d.getHours()) + \":\" +\r",
 							"        pad(d.getMinutes()) + \":\" +\r",
 							"        pad(d.getSeconds()) +  \".\" +\r",
-							"        String(d.getMilliseconds()).padStart(3, '0') + \r",
-							"        timezoneOffset(d.getTimezoneOffset());\r",
+							"        String(d.getMilliseconds()).padStart(3, '0') + \"Z\"\r",
 							"}\r",
 							"\r",
 							"pm.environment.set(\"to\", rfc3339(new Date()));"

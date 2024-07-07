@@ -92,6 +92,10 @@ func (req *getUserTasksReq) fromContext(ctx *gin.Context) (err error) {
 	}
 
 	loc, err := time.LoadLocation("Europe/Moscow")
+	if err != nil {
+		return fmt.Errorf(httputil.SOMETHING_WENT_WRONG)
+	}
+
 	req.from, err = time.ParseInLocation(rfc3339, ctx.Query("from"), loc)
 	if err != nil {
 		logrus.Debug(err)
