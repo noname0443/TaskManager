@@ -17,15 +17,14 @@ import (
 // @Description  Creates task
 // @Accept       json
 // @Produce      json
-// @Param        userId body uint true "User ID"
-// @Param        description body string true "Description"
+// @Param        request body CreateTaskReq true "CreateTaskReq"
 // @Success      200  {int} taskId
 // @Failure      400  {object} httputil.HTTPError
 // @Failure      404  {object} httputil.HTTPError
 // @Failure      500  {object} httputil.HTTPError
 // @Router       /tasks/ [post]
 func (c *Controller) CreateTask(ctx *gin.Context) {
-	req := createTaskReq{}
+	req := CreateTaskReq{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logrus.Debug(err)
 		httputil.NewError(ctx, 400, err)
@@ -53,7 +52,7 @@ func (c *Controller) CreateTask(ctx *gin.Context) {
 	ctx.JSON(200, taskId)
 }
 
-type createTaskReq struct {
+type CreateTaskReq struct {
 	UserID      int    `json:"userId"`
 	Description string `json:"description"`
 }

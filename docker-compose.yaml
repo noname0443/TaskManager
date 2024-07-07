@@ -4,30 +4,33 @@ services:
   postgres:
     image: postgres
     environment:
-      POSTGRES_DB: "postgres"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      TZ: "Europe/Moscow"
+      PGTZ: "Europe/Moscow"
+      POSTGRES_DB: "${POSTGRES_DBNAME}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     networks:
       test_net:
-        ipv4_address: 192.168.56.3
+        ipv4_address: "${POSTGRES_HOST}"
 
   task_manager:
+    env_file: .env
     build:
-      context: ./src
-      dockerfile: ./src/Dockerfile
+      context: ./
+      dockerfile: ./Dockerfile
     hostname: task_manager
     ports:
-      - 8080:8080
+      - "${SERVICE_PORT}:${SERVICE_PORT}"
     networks:
       test_net:
-        ipv4_address: 192.168.56.4
+        ipv4_address: 192.168.56.5
 
   external_service:
     build:
-      context: ./external_service
-      dockerfile: ./external_service/Dockerfile
+      context: ./tests/external_service
+      dockerfile: ./Dockerfile
     hostname: task_manager
     networks:
       test_net:

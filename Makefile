@@ -1,5 +1,5 @@
 run:
-	docker-compose up --build
+	docker-compose --env-file .env up --build
 
 test:
-	docker-compose -f docker-compose-test.yaml up --build --abort-on-container-exit --exit-code-from postman
+	docker-compose -f tests/docker-compose.yaml --env-file .env up --build --abort-on-container-exit --exit-code-from postman

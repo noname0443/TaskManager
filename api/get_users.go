@@ -92,6 +92,7 @@ func (req *getUsersReq) fromContext(ctx *gin.Context) (err error) {
 }
 
 type UserJSON struct {
+	UserID         uint   `json:"userId"`
 	PassportNumber string `json:"passportNumber"`
 	Surname        string `json:"surname"`
 	Name           string `json:"name"`
@@ -109,6 +110,9 @@ func usersDBtoJSON(usersDB []models.User) ([]UserJSON, error) {
 	err = json.Unmarshal(byteArray, &usersJson)
 	if err != nil {
 		return nil, err
+	}
+	for i := 0; i < len(usersJson); i++ {
+		usersJson[i].UserID = usersDB[i].ID
 	}
 
 	return usersJson, nil

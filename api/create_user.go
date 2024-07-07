@@ -15,13 +15,13 @@ import (
 // @Description  Creates user
 // @Accept       json
 // @Produce      json
-// @Param        passportNumber body CreateUserRequest true "Create user"
+// @Param        passportNumber body CreateUserReq true "Create user"
 // @Success      200  {uint} userId
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /users/ [post]
 func (c *Controller) CreateUser(ctx *gin.Context) {
-	req := createUserReq{}
+	req := CreateUserReq{}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logrus.Debug(err)
 		httputil.NewError(ctx, 400, err)
@@ -49,6 +49,6 @@ func (c *Controller) CreateUser(ctx *gin.Context) {
 	ctx.JSON(200, user.ID)
 }
 
-type createUserReq struct {
+type CreateUserReq struct {
 	PassportNumber string `json:"passportNumber"`
 }
